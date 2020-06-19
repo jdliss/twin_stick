@@ -23,24 +23,32 @@ struct Player {
 impl Player {
     pub fn update(&mut self, ctx: &mut Context) {
         if self.last_direction == Direction::Right {
-            if self.x + self.width as u32 + self.speed as u32 > SCREEN_WIDTH - SCREEN_BUFFER as u32 {
-                self.x = SCREEN_WIDTH - SCREEN_BUFFER as u32 - self.width as u32
-            }
-
-            if self.x + self.width as u32 != SCREEN_WIDTH - SCREEN_BUFFER as u32 {
-                self.x += self.speed as u32;
-            } else {
-                self.x -= self.speed as u32;
-                self.last_direction = Direction::Left;
-            }
+            self.update_pos_right();
         } else {
-            if self.x < self.speed as u32 { self.x = 0 + SCREEN_BUFFER as u32 };
-            if self.x != 0 + SCREEN_BUFFER as u32 {
-                self.x -= self.speed as u32;
-            } else {
-                self.x += self.speed as u32;
-                self.last_direction = Direction::Right;
-            }
+            self.update_pos_left();
+        }
+    }
+
+    fn update_pos_right(&mut self) {
+        if self.x + self.width as u32 + self.speed as u32 > SCREEN_WIDTH - SCREEN_BUFFER as u32 {
+            self.x = SCREEN_WIDTH - SCREEN_BUFFER as u32 - self.width as u32
+        }
+
+        if self.x + self.width as u32 != SCREEN_WIDTH - SCREEN_BUFFER as u32 {
+            self.x += self.speed as u32;
+        } else {
+            self.x -= self.speed as u32;
+            self.last_direction = Direction::Left;
+        }
+    }
+
+    fn update_pos_left(&mut self) {
+        if self.x < self.speed as u32 { self.x = 0 + SCREEN_BUFFER as u32 };
+        if self.x != 0 + SCREEN_BUFFER as u32 {
+            self.x -= self.speed as u32;
+        } else {
+            self.x += self.speed as u32;
+            self.last_direction = Direction::Right;
         }
     }
 
@@ -93,7 +101,7 @@ impl ggez::event::EventHandler for State {
       Ok(())
   }
   fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-      println!("FPS: {}", ggez::timer::fps(ctx));
+      println!("FPS: {}", ggez::timer::fps(ctx) as u32);
       graphics::clear(ctx, graphics::BLACK);
       self.player.draw(ctx);
       graphics::present(ctx)?;
