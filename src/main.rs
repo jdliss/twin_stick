@@ -77,7 +77,9 @@ struct State {
     player: Player,
     gameover: bool,
     last_update: Instant
-} impl State {
+}
+
+impl State {
     pub fn new(x: u32, y: u32) -> Self {
         let player = Player {
             x: x,
